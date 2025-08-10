@@ -33,7 +33,7 @@ const Homepage = () => {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-16">
-            <Card>
+            <Card className="py-6">
               <CardHeader className="flex items-center justify-center">
                 <img src="/icons/Vector.png" alt="vector 1" />
               </CardHeader>
@@ -41,7 +41,7 @@ const Homepage = () => {
                 <p className="font-bold text-[#0F828C]">DATA STUNTING</p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="py-6">
               <CardHeader className="flex items-center justify-center">
                 <img src="/icons/chart-histogram 1.png" alt="vector 1" />
               </CardHeader>
@@ -49,7 +49,7 @@ const Homepage = () => {
                 <p className="font-bold text-[#0F828C]">FASILITAS PUBLIK</p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="py-6">
               <CardHeader className="flex items-center justify-center">
                 <img src="/icons/Vector (1).png" alt="vector 1" />
               </CardHeader>
@@ -57,7 +57,7 @@ const Homepage = () => {
                 <p className="font-bold text-[#0F828C]">EDUKASI MASYARAKAT</p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="py-6">
               <CardHeader className="flex items-center justify-center">
                 <img src="/icons/Vector (2).png" alt="vector 1" />
               </CardHeader>
