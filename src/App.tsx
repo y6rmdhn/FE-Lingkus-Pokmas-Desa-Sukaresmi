@@ -10,11 +10,43 @@ import EdukasiMasyarakat from "./components/view/kegiatan/edukasiMasyarakat/Eduk
 import DetailEdukasiMasyarakat from "./components/view/kegiatan/detailEdukasiMasyarakat/DetailEdukasiMasyarakat";
 import ProdukUnggulanPage from "./components/view/kegiatan/produkUnggulan/ProdukUnggulan";
 import DetailProdukUnggulan from "./components/view/kegiatan/detailProdukUnggulan/DetailProdukUnggulan";
+import LoginPage from "./components/view/auth/login/Login";
+import DataKelompokMasyarakat from "./components/view/admin/dataKelompokMasyarakat/DataKelompokMasyarakat";
+import DataDesa from "./components/view/admin/dataDesa/DataDesa";
+import StuntingPage from "./components/view/admin/dataStunting/DataStunting";
+import DataFasilitasPublik from "./components/view/admin/dataFasilitasPublik/DataFasilitasPublik";
+import DataEdukasiMasyarakat from "./components/view/admin/dataEdukasiMasyarakat/DataEdukasiMasyarakat";
+import DataGaleri from "./components/view/admin/dataGaleri/DataGaleri";
+import DataProdukUnggulan from "./components/view/admin/dataProdukUnggulan/DataProdukUnggulan";
 
 function App() {
   return (
     <>
       <Routes>
+        {/* auth */}
+        <Route path="/login" element={<LoginPage />} />
+
+        {/* Admin */}
+        <Route
+          path="/admin/data-kelompok-masyarakat"
+          element={<DataKelompokMasyarakat />}
+        />
+        <Route path="/admin/data-desa" element={<DataDesa />} />
+        <Route path="/admin/data-stunting" element={<StuntingPage />} />
+        <Route
+          path="/admin/data-fasilitas-publik"
+          element={<DataFasilitasPublik />}
+        />
+        <Route
+          path="/admin/data-edukasi-masyarakat"
+          element={<DataEdukasiMasyarakat />}
+        />
+        <Route path="/admin/data-galeri" element={<DataGaleri />} />
+        <Route
+          path="/admin/data-produk-unggulan"
+          element={<DataProdukUnggulan />}
+        />
+
         <Route path="/" element={<Homepage />} />
         <Route path="/profil/pokmas-desa-sukaresmi" element={<PokmasDesa />} />
         <Route path="/profil/desa-sukaresmi" element={<DesaSukaresmi />} />
