@@ -16,33 +16,6 @@ const mainArticle = {
   `,
 };
 
-const sidebarArticles = [
-  {
-    id: 1,
-    title: "Ini Judul Artikel Lainnya...",
-    date: "31 Juli 2025",
-    imageUrl: "/img/Rectangle 5436.png",
-  },
-  {
-    id: 2,
-    title: "Ini Judul Artikel Lainnya...",
-    date: "30 Juli 2025",
-    imageUrl: "/img/Rectangle 5436.png",
-  },
-  {
-    id: 3,
-    title: "Ini Judul Artikel Lainnya...",
-    date: "29 Juli 2025",
-    imageUrl: "/img/Rectangle 5436.png",
-  },
-  {
-    id: 4,
-    title: "Ini Judul Artikel Lainnya...",
-    date: "28 Juli 2025",
-    imageUrl: "/img/Rectangle 5436.png",
-  },
-];
-
 export default function DetailEdukasiMasyarakat() {
   return (
     <MainLayout>

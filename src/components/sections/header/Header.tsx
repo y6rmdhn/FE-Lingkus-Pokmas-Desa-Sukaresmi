@@ -94,9 +94,7 @@ export default function Header() {
                                     isSubItemActive &&
                                       "bg-teal-50 text-[#0F828C] hover:bg-teal-100 hover:text-[#0F828C]"
                                   )}
-                                >
-                                  {subItem.description}
-                                </ListItem>
+                                ></ListItem>
                               );
                             })}
                           </ul>

@@ -1,6 +1,7 @@
+import type { PropsWithChildren } from "react";
 import Sidebar from "../block/sidebarAdmin/Sidebar";
 
-export default function AdminLayout({ children }) {
+export default function AdminLayout({ children }: PropsWithChildren) {
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
       <Sidebar />
