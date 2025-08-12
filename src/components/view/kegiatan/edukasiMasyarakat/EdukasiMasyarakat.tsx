@@ -53,7 +53,7 @@ export default function ArticleDetailPage() {
           {/* Layout Grid: 2 kolom untuk konten utama, 1 kolom untuk sidebar */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <main className="lg:col-span-2 bg-white p-6 sm:p-8 rounded-xl shadow-lg">
-              <Link to="/kegiatan/edukasi-masyarakat/detail">
+              <Link to="/kegiatan/edukasi-masyarakat/detail/berita">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
                   {mainArticle.title}
                 </h1>

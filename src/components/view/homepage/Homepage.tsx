@@ -6,14 +6,18 @@ const Homepage = () => {
     <MainLayout>
       <section
         className="relative h-screen bg-cover bg-center flex items-center justify-center"
-        style={{ backgroundImage: "url('/img/bg.png')" }}
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/img/bg.png')",
+        }}
         aria-label="Sawah dan rumah adat Desa Sukaresmi"
       >
         <div className="relative z-10 text-center text-black px-4">
-          <h1 className="text-2xl md:text-5xl font-bold">
-            Selamat Datang <br /> E-Lingkus POKMAS Desa Sukaresmi
+          <h1 className="text-2xl md:text-5xl font-bold text-[#106D63]">
+            <span className="text-[#F39C12]">Selamat Datang</span> <br />{" "}
+            E-Lingkus POKMAS Desa Sukaresmi
           </h1>
-          <p className="mt-4 text-lg md:text-xl max-w-2xl mx-auto">
+          <p className="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-white">
             Sumber informasi terbaru tentang kelompok masyarakat di Desa
             Sukaresmi
           </p>

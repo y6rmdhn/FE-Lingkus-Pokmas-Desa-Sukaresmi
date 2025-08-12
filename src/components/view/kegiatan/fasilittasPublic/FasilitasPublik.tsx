@@ -29,7 +29,7 @@ const FasilitasPublik = () => {
           <img
             src="/img/Rectangle 5424.png"
             alt="Peta Sekretariat"
-            className="mt-8 w-full rounded-lg shadow-lg"
+            className="mt-8 w-3/4 rounded-lg shadow-lg mx-auto"
           />
         </div>
 

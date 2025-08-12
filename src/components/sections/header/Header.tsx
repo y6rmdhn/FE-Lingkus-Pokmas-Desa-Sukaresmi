@@ -27,7 +27,10 @@ const menuItems = [
         title: "Profil POKMAS Desa Sukaresmi",
         href: "/profil/pokmas-desa-sukaresmi",
       },
-      { title: "Profil Desa Sukaresmi", href: "/profil/desa-sukaresmi" },
+      {
+        title: "Profil Desa Sukaresmi",
+        href: "/profil/desa-sukaresmi",
+      },
       {
         title: "Struktur POKMAS Desa Sukaresmi",
         href: "/profil/struktur-pokmas-desa-sukaresmi",

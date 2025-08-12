@@ -41,7 +41,7 @@ export function ChartLineStunting() {
         </div>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className="h-[300px] w-full">
           <LineChart
             accessibilityLayer
             data={chartData}

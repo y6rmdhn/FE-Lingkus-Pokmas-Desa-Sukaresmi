@@ -1,6 +1,7 @@
 import MainLayout from "@/components/layouts/MainLayout";
 // Impor Card dan CardContent
 import { Card, CardContent } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 
 const articles = [
   {
@@ -54,31 +55,33 @@ const DesaSukaresmi = () => {
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {articles.map((article) => (
-            <Card
-              key={article.id}
-              className="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300"
-            >
-              {/* Wadah gambar tidak memiliki padding dan berada langsung di dalam Card */}
-              <div className="aspect-video">
-                <img
-                  src={article.imageUrl}
-                  alt={article.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              {/* Gunakan CardContent untuk memberi padding hanya pada area ini */}
-              <CardContent className="p-5 relative pb-16">
-                <h3 className="font-bold text-xl mb-2 text-gray-800 truncate">
-                  {article.title}
-                </h3>
-                <p className="text-sm text-gray-600 truncate">
-                  {article.description}
-                </p>
-                <div className="absolute bottom-5 right-5 bg-sky-100 text-sky-800 text-xs font-bold py-2 px-3 rounded-md">
-                  {article.date}
+            <Link to="/kegiatan/edukasi-masyarakat/detail">
+              <Card
+                key={article.id}
+                className="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300"
+              >
+                {/* Wadah gambar tidak memiliki padding dan berada langsung di dalam Card */}
+                <div className="aspect-video">
+                  <img
+                    src={article.imageUrl}
+                    alt={article.title}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-              </CardContent>
-            </Card>
+                {/* Gunakan CardContent untuk memberi padding hanya pada area ini */}
+                <CardContent className="p-5 relative pb-16">
+                  <h3 className="font-bold text-xl mb-2 text-gray-800 truncate">
+                    {article.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 truncate">
+                    {article.description}
+                  </p>
+                  <div className="absolute bottom-5 right-5 bg-sky-100 text-sky-800 text-xs font-bold py-2 px-3 rounded-md">
+                    {article.date}
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
       </section>

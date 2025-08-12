@@ -1,12 +1,12 @@
 import { Route, Routes } from "react-router-dom";
 import Homepage from "./components/view/homepage/Homepage";
 import PokmasDesa from "./components/view/profil/pokmasDesa/PokmasDesa";
-import DesaSukaresmi from "./components/view/profil/desa/DesaSukaresmi";
 import PokmasStruktur from "./components/view/profil/pokmasStruktur/PokmasStruktur";
 import Struktur from "./components/view/profil/struktur/Struktur";
 import DataStunting from "./components/view/kegiatan/dataStunting/DataStunting";
 import FasilitasPublik from "./components/view/kegiatan/fasilittasPublic/FasilitasPublik";
 import EdukasiMasyarakat from "./components/view/kegiatan/edukasiMasyarakat/EdukasiMasyarakat";
+import Edukasi from "./components/view/profil/desa/Edukasi";
 import DetailEdukasiMasyarakat from "./components/view/kegiatan/detailEdukasiMasyarakat/DetailEdukasiMasyarakat";
 import ProdukUnggulanPage from "./components/view/kegiatan/produkUnggulan/ProdukUnggulan";
 import DetailProdukUnggulan from "./components/view/kegiatan/detailProdukUnggulan/DetailProdukUnggulan";
@@ -48,8 +48,10 @@ function App() {
         />
 
         <Route path="/" element={<Homepage />} />
+
+        {/* profil menu header */}
         <Route path="/profil/pokmas-desa-sukaresmi" element={<PokmasDesa />} />
-        <Route path="/profil/desa-sukaresmi" element={<DesaSukaresmi />} />
+        <Route path="/profil/desa-sukaresmi" element={<PokmasDesa />} />
         <Route
           path="/profil/struktur-pokmas-desa-sukaresmi"
           element={<PokmasStruktur />}
@@ -58,17 +60,20 @@ function App() {
           path="/profil/struktur-organisasi-desa-sukaresmi"
           element={<Struktur />}
         />
+
+        {/* kegiatan menu header */}
+        <Route path="/kegiatan/edukasi-masyarakat" element={<Edukasi />} />
         <Route path="/kegiatan/data-stunting" element={<DataStunting />} />
         <Route
           path="/kegiatan/fasilitas-publik"
           element={<FasilitasPublik />}
         />
         <Route
-          path="/kegiatan/edukasi-masyarakat"
+          path="/kegiatan/edukasi-masyarakat/detail"
           element={<EdukasiMasyarakat />}
         />
         <Route
-          path="/kegiatan/edukasi-masyarakat/detail"
+          path="/kegiatan/edukasi-masyarakat/detail/berita"
           element={<DetailEdukasiMasyarakat />}
         />
         <Route
