@@ -1,5 +1,10 @@
+import DataStuntingIcon from "@/components/block/icons/DataStuntingIcon";
+import EdukasiMasyarakatIcon from "@/components/block/icons/EdukasiMasyarakatIcon";
+import FasilitasPublikIcon from "@/components/block/icons/FasilitasPublikIcon";
+import ProdukUnggulan from "@/components/block/icons/ProdukUnggulan";
 import MainLayout from "@/components/layouts/MainLayout";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 
 const Homepage = () => {
   return (
@@ -37,38 +42,46 @@ const Homepage = () => {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-16">
-            <Card className="py-6">
-              <CardHeader className="flex items-center justify-center">
-                <img src="/icons/Vector.png" alt="vector 1" />
-              </CardHeader>
-              <CardContent className="text-center">
-                <p className="font-bold text-[#0F828C]">DATA STUNTING</p>
-              </CardContent>
-            </Card>
-            <Card className="py-6">
-              <CardHeader className="flex items-center justify-center">
-                <img src="/icons/chart-histogram 1.png" alt="vector 1" />
-              </CardHeader>
-              <CardContent className="text-center">
-                <p className="font-bold text-[#0F828C]">FASILITAS PUBLIK</p>
-              </CardContent>
-            </Card>
-            <Card className="py-6">
-              <CardHeader className="flex items-center justify-center">
-                <img src="/icons/Vector (1).png" alt="vector 1" />
-              </CardHeader>
-              <CardContent className="text-center">
-                <p className="font-bold text-[#0F828C]">EDUKASI MASYARAKAT</p>
-              </CardContent>
-            </Card>
-            <Card className="py-6">
-              <CardHeader className="flex items-center justify-center">
-                <img src="/icons/Vector (2).png" alt="vector 1" />
-              </CardHeader>
-              <CardContent className="text-center">
-                <p className="font-bold text-[#0F828C]">PRODUK UNGGULAN</p>
-              </CardContent>
-            </Card>
+            <Link to="/kegiatan/data-stunting">
+              <Card className="py-10">
+                <CardHeader className="flex items-center justify-center">
+                  <DataStuntingIcon />
+                </CardHeader>
+                <CardContent className="text-center">
+                  <p className="font-bold text-[#0F828C]">DATA STUNTING</p>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link to="/kegiatan/fasilitas-publik">
+              <Card className="py-10">
+                <CardHeader className="flex items-center justify-center">
+                  <FasilitasPublikIcon />
+                </CardHeader>
+                <CardContent className="text-center">
+                  <p className="font-bold text-[#0F828C]">FASILITAS PUBLIK</p>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link to="/kegiatan/edukasi-masyarakat">
+              <Card className="py-10">
+                <CardHeader className="flex items-center justify-center">
+                  <EdukasiMasyarakatIcon />
+                </CardHeader>
+                <CardContent className="text-center">
+                  <p className="font-bold text-[#0F828C]">EDUKASI MASYARAKAT</p>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link to="/kegiatan/produk-unggulan">
+              <Card className="py-10">
+                <CardHeader className="flex items-center justify-center">
+                  <ProdukUnggulan />
+                </CardHeader>
+                <CardContent className="text-center">
+                  <p className="font-bold text-[#0F828C]">PRODUK UNGGULAN</p>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
         </div>
       </section>

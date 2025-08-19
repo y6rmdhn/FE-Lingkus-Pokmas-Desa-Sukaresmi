@@ -9,6 +9,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { SelectDemo } from "../select/Select";
+import { Button } from "@/components/ui/button";
 
 // 1. Sesuaikan data agar sesuai dengan rentang 0-40
 const chartData = [
@@ -36,7 +37,10 @@ export function ChartLineStunting() {
           <CardTitle className="text-2xl">DATA STUNTING</CardTitle>
         </div>
 
-        <div>
+        <div className="flex gap-4">
+          <Button className="bg-[#0F828C] hover:bg-[#0c6a74] cursor-pointer">
+            Download
+          </Button>
           <SelectDemo />
         </div>
       </CardHeader>

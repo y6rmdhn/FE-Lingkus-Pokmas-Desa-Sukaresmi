@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import MainLayout from "@/components/layouts/MainLayout"; // Asumsikan Anda punya MainLayout
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
 // 1. Siapkan data produk dalam sebuah array.
 const products = [
@@ -43,6 +44,10 @@ const products = [
 ];
 
 const ProdukUnggulanPage = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   return (
     <MainLayout>
       {/* Latar belakang untuk seluruh bagian */}

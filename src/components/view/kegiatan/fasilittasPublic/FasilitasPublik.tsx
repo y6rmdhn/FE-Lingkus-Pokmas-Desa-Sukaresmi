@@ -1,5 +1,6 @@
 import MainLayout from "@/components/layouts/MainLayout";
 import { Card } from "@/components/ui/card";
+import { useEffect } from "react";
 
 const dataKelompok = [
   {
@@ -15,6 +16,10 @@ const dataKelompok = [
 ];
 
 const FasilitasPublik = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   return (
     <MainLayout>
       <div className="flex flex-col">

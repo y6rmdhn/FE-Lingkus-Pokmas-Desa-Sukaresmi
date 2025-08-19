@@ -13,6 +13,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 // Definisikan struktur menu sebagai array of objects (tidak ada perubahan di sini)
 const menuItems = [
@@ -60,8 +61,14 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 z-30 w-full bg-white/30 backdrop-blur-md">
-      <nav className="container mx-auto flex items-center justify-between p-4">
-        <div className="text-lg font-bold text-black">Ini Logo Desa</div>
+      <nav className="container mx-auto flex items-center justify-between px-4 py-2">
+        <div className="text-lg font-bold text-black">
+          <img
+            src="/icons/ChatGPT Image Aug 18, 2025, 09_25_18 PM.png"
+            alt="logo-desa"
+            className="w-16 h-16"
+          />
+        </div>
         <div className="flex items-center space-x-6">
           <NavigationMenu viewport={false}>
             <NavigationMenuList>
@@ -120,12 +127,14 @@ export default function Header() {
               })}
             </NavigationMenuList>
           </NavigationMenu>
-          <a
-            href="/login"
-            className="hidden rounded-md border border-black px-4 py-2 text-sm font-semibold text-black transition-colors duration-200 hover:bg-black hover:text-white sm:block"
-          >
-            Login
-          </a>
+          <Link to="/login">
+            <Button
+              variant="ghost"
+              className="hidden hover:bg-[#0c6a74] rounded-md border border-black px-4 py-2 text-sm font-semibold text-black transition-colors duration-200 hover:text-white sm:block hover:border-[#0F828C]"
+            >
+              Login
+            </Button>
+          </Link>
         </div>
       </nav>
     </header>

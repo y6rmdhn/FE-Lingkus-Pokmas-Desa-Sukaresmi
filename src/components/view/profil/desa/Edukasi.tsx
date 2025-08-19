@@ -1,6 +1,7 @@
 import MainLayout from "@/components/layouts/MainLayout";
 // Impor Card dan CardContent
 import { Card, CardContent } from "@/components/ui/card";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const articles = [
@@ -42,6 +43,10 @@ const articles = [
 ];
 
 const DesaSukaresmi = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   return (
     <MainLayout>
       <section className="mt-28 px-4 sm:px-10 md:px-20 mb-20">
