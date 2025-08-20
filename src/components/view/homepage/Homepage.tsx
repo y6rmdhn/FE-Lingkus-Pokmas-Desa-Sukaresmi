@@ -13,7 +13,7 @@ const Homepage = () => {
         className="relative h-screen bg-cover bg-center flex items-center justify-center"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/img/bg.png')",
+            "linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/img/bg2.jpeg')",
         }}
         aria-label="Sawah dan rumah adat Desa Sukaresmi"
       >
