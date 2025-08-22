@@ -1,6 +1,6 @@
 import * as React from "react";
 // 1. Impor useLocation dari react-router-dom
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 // Impor semua komponen yang dibutuhkan dari shadcn/ui
 import {
@@ -14,6 +14,12 @@ import {
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "@/store/store";
+import { useMutation } from "@tanstack/react-query";
+import authServices from "@/services/auth.services";
+import { clearUserData } from "@/store/userSlice";
+import { toast } from "sonner";
 
 // Definisikan struktur menu sebagai array of objects (tidak ada perubahan di sini)
 const menuItems = [
@@ -55,9 +61,31 @@ const menuItems = [
 
 // Komponen Header utama yang baru
 export default function Header() {
-  // 2. Dapatkan objek lokasi, lalu ambil pathname-nya
   const location = useLocation();
   const currentPath = location.pathname;
+  const dispatch = useDispatch();
+  const userSelector = useSelector((state: RootState) => state.user.id);
+  const navigate = useNavigate();
+
+  const { mutate: logoutMutation } = useMutation({
+    mutationFn: () => authServices.logout(),
+    onSuccess: () => {
+      dispatch(clearUserData());
+      localStorage.removeItem("user");
+      toast.success("Logout berhasil!");
+      navigate("/");
+    },
+    onError: (error) => {
+      console.error("Logout gagal:", error);
+      dispatch(clearUserData());
+      localStorage.removeItem("token");
+      navigate("/login");
+    },
+  });
+
+  const handleLogout = () => {
+    logoutMutation();
+  };
 
   return (
     <header className="fixed top-0 left-0 z-30 w-full bg-white/30 backdrop-blur-md">
@@ -73,7 +101,6 @@ export default function Header() {
           <NavigationMenu viewport={false}>
             <NavigationMenuList>
               {menuItems.map((item) => {
-                // 3. Logika untuk menentukan apakah trigger dropdown aktif
                 const isTriggerActive =
                   item.subItems?.some(
                     (subItem) => subItem.href === currentPath
@@ -84,7 +111,6 @@ export default function Header() {
                     {item.subItems ? (
                       <>
                         <NavigationMenuTrigger
-                          // 4. Terapkan style aktif pada trigger
                           className={cn(isTriggerActive && "text-[#0F828C]")}
                         >
                           {item.title}
@@ -99,7 +125,6 @@ export default function Header() {
                                   key={subItem.title}
                                   href={subItem.href}
                                   title={subItem.title}
-                                  // 5. Terapkan style aktif pada sub-item
                                   className={cn(
                                     isSubItemActive &&
                                       "bg-teal-50 text-[#0F828C] hover:bg-teal-100 hover:text-[#0F828C]"
@@ -113,7 +138,6 @@ export default function Header() {
                     ) : (
                       <Link
                         to={item.href!}
-                        // 6. Terapkan style aktif pada link sederhana
                         className={cn(
                           navigationMenuTriggerStyle(),
                           currentPath === item.href && "text-[#0F828C]"
@@ -127,21 +151,30 @@ export default function Header() {
               })}
             </NavigationMenuList>
           </NavigationMenu>
-          <Link to="/login">
+          {userSelector ? (
             <Button
+              onClick={handleLogout}
               variant="ghost"
               className="hidden hover:bg-[#0c6a74] rounded-md border border-black px-4 py-2 text-sm font-semibold text-black transition-colors duration-200 hover:text-white sm:block hover:border-[#0F828C]"
             >
-              Login
+              Logout
             </Button>
-          </Link>
+          ) : (
+            <Link to="/login">
+              <Button
+                variant="ghost"
+                className="hidden hover:bg-[#0c6a74] rounded-md border border-black px-4 py-2 text-sm font-semibold text-black transition-colors duration-200 hover:text-white sm:block hover:border-[#0F828C]"
+              >
+                Login
+              </Button>
+            </Link>
+          )}
         </div>
       </nav>
     </header>
   );
 }
 
-// Helper component ListItem tidak perlu diubah
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a"> & { title: string }

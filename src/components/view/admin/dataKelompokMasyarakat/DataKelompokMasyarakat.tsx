@@ -1,49 +1,278 @@
 import AdminLayout from "@/components/layouts/AdminLayout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Pencil } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 
-// Data untuk field di konten utama
-const dataFields = [
-  { id: 1, label: "Data 1" },
-  { id: 2, label: "Data 2" },
-  { id: 3, label: "Data 3" },
-  { id: 4, label: "Data 4" },
-  { id: 5, label: "Data 5" },
-  { id: 6, label: "Data 6" },
-];
+import publicServices from "@/services/public.services";
+import authServices from "@/services/auth.services";
+import type { PokmasData } from "@/types/public";
 
-export default function DataKelompokMasyarakat() {
+import { Form } from "@/components/ui/form";
+import { FormFieldInput } from "@/components/block/FormFieldInput/FormFieldInput";
+
+import { FaPlus } from "react-icons/fa";
+import { IoSaveOutline } from "react-icons/io5";
+import { RiResetLeftFill } from "react-icons/ri";
+import { Pencil, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import type { IPokmas } from "@/types/auth";
+
+// schema validasi
+const pokmasSchema = z.object({
+  id: z.string().optional(),
+  nama: z.string().min(1, "Nama wajib diisi"),
+  data: z.string().min(1, "Data wajib diisi"),
+});
+
+type PokmasFormValue = z.infer<typeof pokmasSchema>;
+
+export const DataKelompokMasyarakat = () => {
+  const queryClient = useQueryClient();
+  const [searchParam, setSearchParam] = useSearchParams();
+
+  const [isAddData, setIsAddData] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(
+    Number(searchParam.get("page") || 1)
+  );
+
+  const form = useForm<PokmasFormValue>({
+    defaultValues: {
+      nama: "",
+      data: "",
+    },
+    resolver: zodResolver(pokmasSchema),
+  });
+
+  // get data
+  const { data: dataPokmas } = useQuery({
+    queryKey: ["pokmas-admin", searchParam.get("page")],
+    queryFn: async () => {
+      const response = await publicServices.pokmas();
+      return response.data;
+    },
+  });
+
+  // tambah
+  const { mutate: addPokmas } = useMutation({
+    mutationFn: (data: IPokmas) => authServices.pokmas(data),
+    onSuccess: () => {
+      toast.success("Data berhasil ditambahkan");
+      form.reset();
+      setIsAddData(false);
+      queryClient.invalidateQueries({ queryKey: ["pokmas-admin"] });
+    },
+  });
+
+  // edit
+  const { mutate: updatePokmas } = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: IPokmas }) =>
+      authServices.updatePokmas(id, data),
+    onSuccess: () => {
+      toast.success("Data berhasil diperbarui");
+      form.reset();
+      setIsAddData(false);
+      setIsEditMode(false);
+      setEditingItemId(null);
+      queryClient.invalidateQueries({ queryKey: ["pokmas-admin"] });
+    },
+  });
+
+  // hapus
+  const { mutate: deletePokmas } = useMutation({
+    mutationFn: (id: string) => authServices.deletePokmas(id),
+    onSuccess: () => {
+      toast.success("Data berhasil dihapus");
+      queryClient.invalidateQueries({ queryKey: ["pokmas-admin"] });
+    },
+  });
+
+  // submit handler
+  const handleSubmitPokmas = (values: PokmasFormValue) => {
+    if (isEditMode && editingItemId) {
+      updatePokmas({ id: editingItemId, data: values });
+    } else {
+      addPokmas(values);
+    }
+  };
+
+  const handleEditItem = (item: PokmasData) => {
+    form.reset({
+      id: item.id,
+      nama: item.nama,
+      data: item.data,
+    });
+    setIsEditMode(true);
+    setEditingItemId(item.id);
+    setIsAddData(true);
+
+    if (Number(searchParam.get("page")) !== 1) {
+      searchParam.set("page", "1");
+      setSearchParam(searchParam);
+    }
+  };
+
+  const handleCancel = () => {
+    form.reset();
+    setIsEditMode(false);
+    setEditingItemId(null);
+    setIsAddData(false);
+  };
+
+  // sync page param
+  useEffect(() => {
+    const page = Number(searchParam.get("page") || 1);
+    if (page !== currentPage) {
+      setCurrentPage(page);
+    }
+  }, [searchParam]);
+
   return (
     <AdminLayout>
-      <h1 className="text-3xl font-bold text-[#0F828C] mb-8">
-        DATA KELOMPOK MASYARAKAT
-      </h1>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmitPokmas)}>
+          <h1 className="text-3xl font-bold text-[#0F828C] mb-8">
+            DATA KELOMPOK MASYARAKAT
+          </h1>
 
-      <Card className="shadow-lg py-6">
-        <CardHeader className="flex flex-row items-center justify-end border-b pb-4">
-          <Button>
-            <Pencil className="mr-2 h-4 w-4" /> Edit
-          </Button>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-            {dataFields.map((field) => (
-              <div key={field.id} className="flex items-center gap-4">
-                <label className="w-20 text-sm font-semibold text-gray-700">
-                  {field.label}
-                </label>
-                <Input
-                  className="flex-1"
-                  readOnly
-                  defaultValue="--Jumlah Data--"
-                />
-              </div>
-            ))}
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="flex justify-end mb-4">
+              <Button
+                type="button"
+                onClick={() => {
+                  if (!isEditMode) {
+                    form.reset({
+                      id: undefined,
+                      nama: "",
+                      data: "",
+                    });
+                    setIsAddData(true);
+                    searchParam.set("page", "1");
+                    setSearchParam(searchParam);
+                  }
+                }}
+                className={`cursor-pointer ${isEditMode ? "bg-gray-400" : ""}`}
+                disabled={isEditMode}
+              >
+                <FaPlus className="w-4! h-4! text-white" />
+                Tambah
+              </Button>
+            </div>
+
+            <Table>
+              <TableHeader className="bg-blue-900">
+                <TableRow>
+                  <TableHead className="text-white">Nama</TableHead>
+                  <TableHead className="text-white">Data</TableHead>
+                  <TableHead className="text-white text-center">Aksi</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {(isAddData || isEditMode) && currentPage === 1 && (
+                  <TableRow>
+                    <TableCell>
+                      <FormFieldInput
+                        form={form}
+                        name="nama"
+                        inputStyle="w-full"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <FormFieldInput
+                        form={form}
+                        name="data"
+                        inputStyle="w-full"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2 justify-center">
+                        <Button type="submit" size="icon" variant="ghost">
+                          <IoSaveOutline className="w-5! h-5!" />
+                        </Button>
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          onClick={handleCancel}
+                        >
+                          <RiResetLeftFill className="text-yellow-uika" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+
+                {dataPokmas?.data.map((item: PokmasData) => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.nama}</TableCell>
+                    <TableCell>{item.data}</TableCell>
+                    <TableCell className="flex gap-2 justify-center">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        type="button"
+                        onClick={() => handleEditItem(item)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="icon" variant="ghost" type="button">
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Hapus Data</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Apakah Anda yakin ingin menghapus kelompok
+                              masyarakat <b>{item.nama}</b>? Tindakan ini tidak
+                              bisa dibatalkan.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Batal</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => deletePokmas(item.id)}
+                              className="bg-red-600 hover:bg-red-700"
+                            >
+                              Hapus
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
-        </CardContent>
-      </Card>
+        </form>
+      </Form>
     </AdminLayout>
   );
-}
+};

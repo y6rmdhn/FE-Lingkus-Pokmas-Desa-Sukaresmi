@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import MainLayout from "@/components/layouts/MainLayout";
 import { FaWhatsapp } from "react-icons/fa";
+import { useEffect } from "react";
 
 const productDetail = {
   id: 1,
@@ -14,6 +15,11 @@ const productDetail = {
 };
 
 const DetailProdukUnggulan = () => {
+
+  useEffect(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, []);
+
   return (
     <MainLayout>
       <div className="bg-gray-100 py-20 sm:py-28">

@@ -11,18 +11,35 @@ import DetailEdukasiMasyarakat from "./components/view/kegiatan/detailEdukasiMas
 import ProdukUnggulanPage from "./components/view/kegiatan/produkUnggulan/ProdukUnggulan";
 import DetailProdukUnggulan from "./components/view/kegiatan/detailProdukUnggulan/DetailProdukUnggulan";
 import LoginPage from "./components/view/auth/login/Login";
-import DataKelompokMasyarakat from "./components/view/admin/dataKelompokMasyarakat/DataKelompokMasyarakat";
-import DataDesa from "./components/view/admin/dataDesa/DataDesa";
-import StuntingPage from "./components/view/admin/dataStunting/DataStunting";
+import { DataDesa } from "./components/view/admin/dataDesa/DataDesa";
+import { StuntingPage } from "./components/view/admin/dataStunting/DataStunting";
 import DataFasilitasPublik from "./components/view/admin/dataFasilitasPublik/DataFasilitasPublik";
 import DataEdukasiMasyarakat from "./components/view/admin/dataEdukasiMasyarakat/DataEdukasiMasyarakat";
 import DataGaleri from "./components/view/admin/dataGaleri/DataGaleri";
 import DataProdukUnggulan from "./components/view/admin/dataProdukUnggulan/DataProdukUnggulan";
+import ManajementUser from "./components/view/admin/manajemenUser/ManajementUser";
+import { Toaster } from "./components/ui/sonner";
+import { useHydration } from "./hooks/useHydratetion";
+import { DataKelompokMasyarakat } from "./components/view/admin/dataKelompokMasyarakat/DataKelompokMasyarakat";
 
 function App() {
+  const { isHydrate } = useHydration();
+
+  if (!isHydrate) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-green-600"></div>
+      </div>
+    );
+  }
+
   return (
     <>
+      <Toaster position="top-right" />
       <Routes>
+        {/* Home */}
+        <Route path="/" element={<Homepage />} />
+
         {/* auth */}
         <Route path="/login" element={<LoginPage />} />
 
@@ -46,8 +63,7 @@ function App() {
           path="/admin/data-produk-unggulan"
           element={<DataProdukUnggulan />}
         />
-
-        <Route path="/" element={<Homepage />} />
+        <Route path="/admin/manajement-user" element={<ManajementUser />} />
 
         {/* profil menu header */}
         <Route path="/profil/pokmas-desa-sukaresmi" element={<PokmasDesa />} />

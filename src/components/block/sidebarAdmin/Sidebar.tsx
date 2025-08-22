@@ -23,6 +23,7 @@ const navItems = [
   },
   { href: "/admin/data-galeri", label: "Manajemen Galeri" },
   { href: "/admin/data-produk-unggulan", label: "Manajemen Produk Unggulan" },
+  { href: "/admin/manajement-user", label: "Manajemen User" },
 ];
 
 export default function Sidebar() {
@@ -31,15 +32,21 @@ export default function Sidebar() {
   return (
     <aside className="h-screen w-72 bg-white shadow-lg flex flex-col p-4">
       {/* Logo Placeholder */}
-      <div className="bg-gray-200 h-24 mb-6 rounded-md flex items-center justify-center">
-        <p className="text-gray-500">Ini Logo Desa</p>
+      <div className="h-24 my-6 rounded-md flex items-center justify-center">
+        <img
+          src="/icons/ChatGPT Image Aug 18, 2025, 09_25_18 PM.png"
+          alt="logo-pokmas-desa"
+          className="w-30"
+        />
       </div>
 
       {/* Tombol Logout */}
-      <Button size="lg" className="w-full text-base mb-6">
-        <LogOut className="mr-2 h-5 w-5" />
-        Logout
-      </Button>
+      <Link to="/">
+        <Button size="lg" className="w-full text-base mb-6">
+          <LogOut className="mr-2 h-5 w-5" />
+          Logout
+        </Button>
+      </Link>
 
       {/* Daftar Navigasi */}
       <nav className="flex flex-col space-y-2">

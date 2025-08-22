@@ -84,11 +84,11 @@ export function ChartLineStunting() {
             <Line
               dataKey="stunting"
               type="monotone"
-              stroke="var(--color-stunting)"
+              stroke="#F39C12"
               strokeWidth={2}
               dot={{
                 r: 6,
-                fill: "var(--color-stunting)",
+                fill: "#F39C12",
                 stroke: "#FFFFFF",
                 strokeWidth: 2,
               }}
