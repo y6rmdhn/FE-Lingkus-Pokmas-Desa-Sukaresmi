@@ -31,6 +31,12 @@ const authServices = {
   updateGaleri: (id: string, payload: FormData) =>
     axiosInstance.put(`/galeri/${id}`, payload),
   deleteGaleri: (id: string) => axiosInstance.delete(`/galeri/${id}`),
+  produkUnggulan: (payload: FormData) =>
+    axiosInstance.post(`/produk-unggulan`, payload),
+  updateProdukUnggulan: (id: string, payload: FormData) =>
+    axiosInstance.put(`/produk-unggulan/${id}`, payload),
+  deleteProdukUnggulan: (id: string) =>
+    axiosInstance.delete(`/produk-unggulan/${id}`),
 };
 
 export default authServices;

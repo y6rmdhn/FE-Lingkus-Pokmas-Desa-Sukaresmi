@@ -6,6 +6,7 @@ const publicServices = {
   desa: () => axiosInstance.get(`/desa`),
   stunting: () => axiosInstance.get(`/stunting`),
   galeri: () => axiosInstance.get(`/galeri`),
+  produkUnggulan: () => axiosInstance.get(`/produk-unggulan`),
 };
 
 export default publicServices;

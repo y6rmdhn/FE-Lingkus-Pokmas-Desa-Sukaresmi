@@ -18,4 +18,11 @@ type IGaleri = {
   date: string;
 };
 
-export type { IPokmas, IStunting, IGaleri };
+type IProdukUnggulan = {
+  nama_produk: string;
+  konten: string;
+  image: string;
+  harga: number;
+  kontak: string;
+};
+export type { IPokmas, IStunting, IGaleri, IProdukUnggulan };

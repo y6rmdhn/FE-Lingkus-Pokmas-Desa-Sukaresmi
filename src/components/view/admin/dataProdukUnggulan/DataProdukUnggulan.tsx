@@ -8,141 +8,322 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import { PlusCircle, Pencil, Trash2 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 
-// Data sampel (tidak berubah)
-const stuntingData = [
-  { id: 1, count: 20, year: 2025, month: "Juli" },
-  { id: 2, count: 25, year: 2025, month: "Juni" },
-  { id: 3, count: 19, year: 2025, month: "Mei" },
-  { id: 4, count: 15, year: 2025, month: "April" },
-  { id: 5, count: 18, year: 2025, month: "Maret" },
-  { id: 6, count: 18, year: 2025, month: "Februari" },
-  { id: 7, count: 18, year: 2025, month: "Januari" },
-  { id: 8, count: 18, year: 2024, month: "Desember" },
-  { id: 9, count: 18, year: 2024, month: "November" },
-  { id: 10, count: 18, year: 2025, month: "Oktober" },
-];
+import publicServices from "@/services/public.services";
+import authServices from "@/services/auth.services";
+
+import { Form } from "@/components/ui/form";
+import { FormFieldInput } from "@/components/block/FormFieldInput/FormFieldInput";
+import { FormFieldInputFile } from "@/components/block/FormFieldInputFile/FormFieldInputFile";
+
+import { FaPlus } from "react-icons/fa";
+import { IoSaveOutline } from "react-icons/io5";
+import { RiResetLeftFill } from "react-icons/ri";
+import { Pencil, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+// schema validasi
+const produkSchema = z.object({
+  id: z.string().optional(),
+  nama_produk: z.string().min(1, "Nama produk wajib diisi"),
+  konten: z.string().min(1, "Konten wajib diisi"),
+  harga: z.string().min(1, "Harga wajib diisi"),
+  kontak_wa: z.string().min(1, "Kontak WA wajib diisi"),
+  image: z.any().optional(),
+});
+
+type ProdukFormValue = z.infer<typeof produkSchema>;
 
 const DataProdukUnggulan = () => {
+  const queryClient = useQueryClient();
+  const [searchParam, setSearchParam] = useSearchParams();
+
+  const [isAddData, setIsAddData] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(
+    Number(searchParam.get("page") || 1)
+  );
+
+  const form = useForm<ProdukFormValue>({
+    defaultValues: {
+      nama_produk: "",
+      konten: "",
+      harga: "",
+      kontak_wa: "",
+      image: null,
+    },
+    resolver: zodResolver(produkSchema),
+  });
+
+  // get data
+  const { data: dataProduk } = useQuery({
+    queryKey: ["produk-unggulan-admin", searchParam.get("page")],
+    queryFn: async () => {
+      const response = await publicServices.produkUnggulan();
+      return response.data;
+    },
+  });
+
+  // tambah
+  const { mutate: addProduk } = useMutation({
+    mutationFn: (formData: FormData) => authServices.produkUnggulan(formData),
+    onSuccess: () => {
+      toast.success("Data berhasil ditambahkan");
+      form.reset();
+      setIsAddData(false);
+      queryClient.invalidateQueries({ queryKey: ["produk-unggulan-admin"] });
+    },
+  });
+
+  // edit
+  const { mutate: updateProduk } = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: FormData }) =>
+      authServices.updateProdukUnggulan(id, data),
+    onSuccess: () => {
+      toast.success("Data berhasil diperbarui");
+      form.reset();
+      setIsAddData(false);
+      setIsEditMode(false);
+      setEditingItemId(null);
+      queryClient.invalidateQueries({ queryKey: ["produk-unggulan-admin"] });
+    },
+  });
+
+  // hapus
+  const { mutate: deleteProduk } = useMutation({
+    mutationFn: (id: string) => authServices.deleteProdukUnggulan(id),
+    onSuccess: () => {
+      toast.success("Data berhasil dihapus");
+      queryClient.invalidateQueries({ queryKey: ["produk-unggulan-admin"] });
+    },
+  });
+
+  // submit handler
+  const handleSubmitProduk = (values: ProdukFormValue) => {
+    const formData = new FormData();
+    formData.append("nama_produk", values.nama_produk);
+    formData.append("konten", values.konten);
+    formData.append("harga", values.harga);
+    formData.append("kontak_wa", values.kontak_wa);
+    if (values.image instanceof File) {
+      formData.append("image", values.image);
+    }
+
+    if (isEditMode && editingItemId) {
+      updateProduk({ id: editingItemId, data: formData });
+    } else {
+      addProduk(formData);
+    }
+  };
+
+  const handleEditItem = (item: ProdukFormValue) => {
+    form.reset({
+      id: item.id,
+      nama_produk: item.nama_produk,
+      konten: item.konten,
+      harga: item.harga,
+      kontak_wa: item.kontak_wa,
+      image: null,
+    });
+    setIsEditMode(true);
+    setEditingItemId(item.id!);
+    setIsAddData(true);
+
+    if (Number(searchParam.get("page")) !== 1) {
+      searchParam.set("page", "1");
+      setSearchParam(searchParam);
+    }
+  };
+
+  const handleCancel = () => {
+    form.reset();
+    setIsEditMode(false);
+    setEditingItemId(null);
+    setIsAddData(false);
+  };
+
+  // sync page param
+  useEffect(() => {
+    const page = Number(searchParam.get("page") || 1);
+    if (page !== currentPage) {
+      setCurrentPage(page);
+    }
+  }, [searchParam]);
+
   return (
     <AdminLayout>
-      <h1 className="text-3xl font-bold text-[#0F828C] mb-8">
-        DATA PRODUK UNGGULAN
-      </h1>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmitProduk)}>
+          <h1 className="text-3xl font-bold text-[#0F828C] mb-8">
+            DATA PRODUK UNGGULAN
+          </h1>
 
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <div className="flex justify-end mb-4">
-          <Button className="bg-green-600 hover:bg-green-700">
-            <PlusCircle className="mr-2 h-4 w-4" /> Tambah
-          </Button>
-        </div>
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="flex justify-end mb-4">
+              <Button
+                type="button"
+                onClick={() => {
+                  if (!isEditMode) {
+                    form.reset({
+                      id: undefined,
+                      nama_produk: "",
+                      konten: "",
+                      harga: "",
+                      kontak_wa: "",
+                      image: null,
+                    });
+                    setIsAddData(true);
+                    searchParam.set("page", "1");
+                    setSearchParam(searchParam);
+                  }
+                }}
+                className={`cursor-pointer ${isEditMode ? "bg-gray-400" : ""}`}
+                disabled={isEditMode}
+              >
+                <FaPlus className="w-4 h-4 text-white" />
+                Tambah
+              </Button>
+            </div>
 
-        <Table>
-          {/* ... Isi tabel tidak berubah ... */}
-          <TableHeader className="bg-blue-900">
-            <TableRow>
-              <TableHead className="text-white font-bold">
-                Nama Produk
-              </TableHead>
-              <TableHead className="text-white font-bold">Deskripsi</TableHead>
-              <TableHead className="text-white font-bold">Harga</TableHead>
-              <TableHead className="text-white font-bold">Nomor HP</TableHead>
-              <TableHead className="text-white font-bold">Image</TableHead>
-              <TableHead className="text-white font-bold text-center">
-                Aksi
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {stuntingData.map((data) => (
-              <TableRow key={data.id}>
-                <TableCell>{data.count}</TableCell>
-                <TableCell>{data.year}</TableCell>
-                <TableCell>{data.year}</TableCell>
-                <TableCell>{data.year}</TableCell>
-                <TableCell>{data.month}</TableCell>
-                <TableCell className="flex items-center justify-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="text-blue-600 border-blue-600 hover:bg-blue-50 hover:text-blue-700"
-                  >
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            <Table>
+              <TableHeader className="bg-blue-900">
+                <TableRow>
+                  <TableHead className="text-white">Nama</TableHead>
+                  <TableHead className="text-white">Konten</TableHead>
+                  <TableHead className="text-white">Harga</TableHead>
+                  <TableHead className="text-white">Kontak WA</TableHead>
+                  <TableHead className="text-white">Gambar</TableHead>
+                  <TableHead className="text-white text-center">Aksi</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {(isAddData || isEditMode) && currentPage === 1 && (
+                  <TableRow>
+                    <TableCell>
+                      <FormFieldInput
+                        form={form}
+                        name="nama_produk"
+                        inputStyle="w-full"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <FormFieldInput
+                        form={form}
+                        name="konten"
+                        inputStyle="w-full"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <FormFieldInput
+                        form={form}
+                        name="harga"
+                        inputStyle="w-full"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <FormFieldInput
+                        form={form}
+                        name="kontak_wa"
+                        inputStyle="w-full"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <FormFieldInputFile name="image" />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2 justify-center">
+                        <Button type="submit" size="icon" variant="ghost">
+                          <IoSaveOutline className="w-5 h-5" />
+                        </Button>
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          onClick={handleCancel}
+                        >
+                          <RiResetLeftFill className="text-yellow-uika" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
 
-        {/* 2. Ganti bagian paginasi lama dengan komponen Pagination baru */}
-        <div className="flex items-center justify-between mt-6">
-          <div className="flex items-center gap-2">
-            <Select defaultValue="10">
-              <SelectTrigger className="w-28">
-                <SelectValue placeholder="10 Baris" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="10">10 Baris</SelectItem>
-                <SelectItem value="20">20 Baris</SelectItem>
-                <SelectItem value="50">50 Baris</SelectItem>
-              </SelectContent>
-            </Select>
+                {dataProduk?.data.map((item: ProdukFormValue) => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.nama_produk}</TableCell>
+                    <TableCell>{item.konten}</TableCell>
+                    <TableCell>{item.harga}</TableCell>
+                    <TableCell>{item.kontak_wa}</TableCell>
+                    <TableCell>
+                      {item.image && (
+                        <img
+                          src={item.image}
+                          alt={item.nama_produk}
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                      )}
+                    </TableCell>
+                    <TableCell className="flex gap-2 justify-center">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        type="button"
+                        onClick={() => handleEditItem(item)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="icon" variant="ghost" type="button">
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Hapus Data</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Apakah Anda yakin ingin menghapus produk{" "}
+                              <b>{item.nama_produk}</b>? Tindakan ini tidak bisa
+                              dibatalkan.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Batal</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => deleteProduk(item.id!)}
+                              className="bg-red-600 hover:bg-red-700"
+                            >
+                              Hapus
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
-
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious href="#" />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" isActive>
-                  1
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">2</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">4</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext href="#" />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
-      </div>
+        </form>
+      </Form>
     </AdminLayout>
   );
 };

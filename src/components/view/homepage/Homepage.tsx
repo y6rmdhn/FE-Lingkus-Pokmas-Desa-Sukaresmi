@@ -48,7 +48,7 @@ const Homepage = () => {
               }}
               aria-label="Sawah dan rumah adat Desa Sukaresmi"
             >
-              <div className="relative z-10 text-center px-4">
+              <div className="relative z-10 text-center px-4 -mt-40">
                 <h1 className="text-2xl md:text-5xl font-bold text-[#106D63]">
                   <span className="text-[#F39C12]">Selamat Datang</span> <br />{" "}
                   E-Lingkus POKMAS Desa Sukaresmi
