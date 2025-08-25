@@ -1,9 +1,14 @@
 "use client";
 
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useDispatch } from "react-redux";
+import authServices from "@/services/auth.services";
+import { useMutation } from "@tanstack/react-query";
+import { clearUserData } from "@/store/userSlice";
+import { toast } from "sonner";
 
 // Data untuk item navigasi, mudah dikelola di sini
 const navItems = [
@@ -28,6 +33,28 @@ const navItems = [
 
 export default function Sidebar() {
   const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { mutate: logoutMutation } = useMutation({
+    mutationFn: () => authServices.logout(),
+    onSuccess: () => {
+      dispatch(clearUserData());
+      localStorage.removeItem("user");
+      toast.success("Logout berhasil!");
+      navigate("/");
+    },
+    onError: (error) => {
+      console.error("Logout gagal:", error);
+      dispatch(clearUserData());
+      localStorage.removeItem("user");
+      navigate("/login");
+    },
+  });
+
+  const handleLogout = () => {
+    logoutMutation();
+  };
 
   return (
     <aside className="h-screen w-72 bg-white shadow-lg flex flex-col p-4">
@@ -41,12 +68,14 @@ export default function Sidebar() {
       </div>
 
       {/* Tombol Logout */}
-      <Link to="/">
-        <Button size="lg" className="w-full text-base mb-6">
-          <LogOut className="mr-2 h-5 w-5" />
-          Logout
-        </Button>
-      </Link>
+      <Button
+        onClick={handleLogout}
+        size="lg"
+        className="w-full text-base mb-6"
+      >
+        <LogOut className="mr-2 h-5 w-5" />
+        Logout
+      </Button>
 
       {/* Daftar Navigasi */}
       <nav className="flex flex-col space-y-2">

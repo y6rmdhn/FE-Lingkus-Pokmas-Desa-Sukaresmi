@@ -78,7 +78,7 @@ export default function Header() {
     onError: (error) => {
       console.error("Logout gagal:", error);
       dispatch(clearUserData());
-      localStorage.removeItem("token");
+      localStorage.removeItem("user");
       navigate("/login");
     },
   });

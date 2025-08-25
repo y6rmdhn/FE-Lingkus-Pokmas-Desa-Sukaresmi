@@ -1,4 +1,4 @@
-import type { IPokmas, IStunting } from "@/types/auth";
+import type { IManajememUser, IPokmas, IStunting } from "@/types/auth";
 import axiosInstance from "../lib/axiosInstance";
 
 type ILogin = {
@@ -37,6 +37,21 @@ const authServices = {
     axiosInstance.put(`/produk-unggulan/${id}`, payload),
   deleteProdukUnggulan: (id: string) =>
     axiosInstance.delete(`/produk-unggulan/${id}`),
+  kontenDesa: (payload: FormData) => axiosInstance.post(`/kontenDesa`, payload),
+  updateKontenDesa: (payload: FormData) =>
+    axiosInstance.put(`/kontenDesa`, payload),
+  deleteKontenDesa: () => axiosInstance.delete(`/kontenDesa`),
+  kontenPokmas: (payload: FormData) =>
+    axiosInstance.post(`/kontenPokmas`, payload),
+  updateKontenPokmas: (payload: FormData) =>
+    axiosInstance.put(`/kontenPokmas`, payload),
+  deleteKontenPokmas: () => axiosInstance.delete(`/kontenPokmas`),
+  berita: (payload: FormData) => axiosInstance.post(`/berita`, payload),
+  updateBerita: (id: string, payload: FormData) =>
+    axiosInstance.put(`/berita/${id}`, payload),
+  deleteBerita: (id: string) => axiosInstance.delete(`/berita/${id}`),
+  updateUser: (payload: IManajememUser) =>
+    axiosInstance.put(`/auth/profile`, payload),
 };
 
 export default authServices;

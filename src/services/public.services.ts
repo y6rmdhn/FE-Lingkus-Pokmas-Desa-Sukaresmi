@@ -7,6 +7,9 @@ const publicServices = {
   stunting: () => axiosInstance.get(`/stunting`),
   galeri: () => axiosInstance.get(`/galeri`),
   produkUnggulan: () => axiosInstance.get(`/produk-unggulan`),
+  kontenDesa: () => axiosInstance.get(`/kontenDesa`),
+  kontenPokmas: () => axiosInstance.get(`/kontenPokmas`),
+  berita: () => axiosInstance.get(`/berita`),
 };
 
 export default publicServices;

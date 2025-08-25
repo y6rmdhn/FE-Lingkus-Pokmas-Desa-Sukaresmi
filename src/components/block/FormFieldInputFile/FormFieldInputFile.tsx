@@ -38,11 +38,7 @@ export const FormFieldInputFile = ({
       control={form.control}
       name={name}
       render={({ field }) => (
-        <FormItem
-          className={`flex items-start gap-2 flex-col lg:flex-row ${
-            classname || ""
-          }`}
-        >
+        <FormItem className={` ${classname || ""}`}>
           <FormLabel
             className={`w-full text-xs sm:text-sm mt-0 lg:mt-2 ${
               labelStyle || ""
